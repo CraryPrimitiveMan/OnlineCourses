@@ -1,44 +1,52 @@
 OnlineCourses
 =============
 
-An online courses website based on Yii2 Advanced Application
+An online courses website based on [Yii2](https://github.com/yiisoft/yii2) Advanced Application.
+
+The frontend app based on [angular-requirejs-seed](https://github.com/tnajdek/angular-requirejs-seed).
 
 DIRECTORY STRUCTURE
 -------------------
 
 ```
 common
-    config/              contains shared configurations
-    mail/                contains view files for e-mails
-    models/              contains model classes used in both backend and frontend
+├── config/              contains shared configurations
+├── mail/                contains view files for e-mails
+└── models/              contains model classes used in both backend and frontend
 console
-    config/              contains console configurations
-    controllers/         contains console controllers (commands)
-    migrations/          contains database migrations
-    models/              contains console-specific model classes
-    runtime/             contains files generated during runtime
+├── config/              contains console configurations
+├── controllers/         contains console controllers (commands)
+├── migrations/          contains database migrations
+├── models/              contains console-specific model classes
+└── runtime/             contains files generated during runtime
 backend
-    assets/              contains application assets such as JavaScript and CSS
-    config/              contains backend configurations
-    controllers/         contains Web controller classes
-    models/              contains backend-specific model classes
-    runtime/             contains files generated during runtime
-    views/               contains view files for the Web application
-    web/                 contains the entry script and Web resources
+├── assets/              contains application assets such as JavaScript and CSS
+├── config/              contains backend configurations
+├── controllers/         contains Web controller classes
+├── models/              contains backend-specific model classes
+├── runtime/             contains files generated during runtime
+├── views/               contains view files for the Web application
+└── web/                 contains the entry script and Web resources
 frontend
-    assets/              contains application assets such as JavaScript and CSS
-    config/              contains frontend configurations
-    controllers/         contains Web controller classes
-    models/              contains frontend-specific model classes
-    runtime/             contains files generated during runtime
-    views/               contains view files for the Web application
-    web/                 contains the entry script and Web resources
-    widgets/             contains frontend widgets
-app/                     contains frontend page
+├── assets/              contains application assets such as JavaScript and CSS
+├── config/              contains frontend configurations
+├── controllers/         contains Web controller classes
+├── models/              contains frontend-specific model classes
+├── runtime/             contains files generated during runtime
+├── views/               contains view files for the Web application
+├── web/                 contains the entry script and Web resources
+└── widgets/             contains frontend widgets
+apps
+├── app/                 contains frontend app files
+├── config/              contains karma config
+├── index.html           the entry point
+├── logs/                contains app logs
+├── scripts/
+└── test/                contains tests with angular
 vendor/                  contains dependent 3rd-party packages
 environments/            contains environment-based overrides
 tests                    contains various tests for the advanced application
-    codeception/         contains tests developed with Codeception PHP Testing Framework
+└── codeception/         contains tests developed with Codeception PHP Testing Framework
 ```
 
 
@@ -71,17 +79,16 @@ server {
     error_log  /var/log/nginx/course.com-error.log;
 
     location / {
-        root  /var/www/OnlineCourses/app;
+        root  /var/www/OnlineCourses/apps;
+        rewrite ^/?(.*) /apps/index.html last;
+    }
 
-        rewrite ^/?(.*) /app/index.php last;
+    location /app/ {
+        alias /var/www/OnlineCourses/apps/app/;
+    }
 
-        # avoiding processing of calls to non-existing static files by Yii
-        location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
-            access_log  off;
-            expires  360d;
-
-            try_files  $uri =404;
-        }
+    location /vendor/ {
+        alias /var/www/OnlineCourses/vendor/;
     }
 
     location /api {
@@ -118,7 +125,7 @@ server {
         try_files  $uri =404;
     }
 
-    location ~ \.php$ {
+    location ~ \.(php|htm|html)$ {
         include  fastcgi_params;
         # check your /etc/php5/fpm/pool.d/www.conf to see if PHP-FPM is listening on a socket or port
         fastcgi_pass  unix:/var/run/php5-fpm.sock; ## listen for socket
@@ -138,4 +145,11 @@ server {
 }
 ```
 
+If you cannot access html files, you need to add to the /etc/php5/fpm/pool.d/www.conf inside the [www] section
+
+```sh
+security.limit_extensions = .php .html
+```
+
+See [here](https://bugs.php.net/bug.php?id=60763)
 
