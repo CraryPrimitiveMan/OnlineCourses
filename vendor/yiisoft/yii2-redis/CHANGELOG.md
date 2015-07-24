@@ -1,6 +1,24 @@
 Yii Framework 2 redis extension Change Log
 ==========================================
 
+2.0.4 under development
+-----------------------
+
+- Enh #8: Auto increment value was not updated when a primary key was explicitly set (cebe, andruha)
+
+
+2.0.3 March 01, 2015
+--------------------
+
+- no changes in this release.
+
+
+2.0.2 January 11, 2015
+----------------------
+
+- Bug #6547: Fixed redis connection to deal with large data in combination with `mget()` (pyurin)
+
+
 2.0.1 December 07, 2014
 -----------------------
 

@@ -16,6 +16,7 @@ use yii\apidoc\renderers\ApiRenderer as BaseApiRenderer;
 use yii\base\ViewContextInterface;
 use yii\helpers\Console;
 use yii\helpers\Html;
+use yii\helpers\StringHelper;
 use yii\web\AssetManager;
 use yii\web\View;
 use Yii;
@@ -30,10 +31,6 @@ use Yii;
  */
 class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 {
-    /**
-     * @var string string to use as the title of the generated page.
-     */
-    public $pageTitle;
     /**
      * @var string path or alias of the layout file to use.
      */
@@ -59,7 +56,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
         parent::init();
 
         if ($this->pageTitle === null) {
-            $this->pageTitle = 'Yii Framework 2.0 API Documentation'; // TODO guess page title
+            $this->pageTitle = 'Yii Framework 2.0 API Documentation';
         }
     }
 

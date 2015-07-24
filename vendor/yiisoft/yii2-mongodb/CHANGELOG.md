@@ -1,6 +1,27 @@
 Yii Framework 2 mongodb extension Change Log
 ============================================
 
+2.0.4 under development
+-----------------------
+
+- Bug #7010: Fixed `yii\mongodb\Query::one()` fails on PHP MongoDB extension version 1.6.x (im-kulikov, klimov-paul)
+- Enh #5802: Added `yii\mongodb\validators\MongoIdValidator` and `yii\mongodb\validators\MongoDateValidator` validators (klimov-paul)
+- Enh #7798: Added support for 'NOT' conditions at `yii\mongodb\Collection` (klimov-paul)
+- Chg #7924: Migrations in history are now ordered by time applied allowing to roll back in reverse order no matter how these were applied (klimov-paul)
+
+
+2.0.3 March 01, 2015
+--------------------
+
+- Bug #7010: Fixed `yii\mongodb\Query::select` now allows excluding fields (Sammaye, klimov-paul)
+
+
+2.0.2 January 11, 2015
+----------------------
+
+- Bug #6376: Fixed lazy load of relations to `yii\mongodb\file\ActiveRecord` (klimov-paul)
+
+
 2.0.1 December 07, 2014
 -----------------------
 

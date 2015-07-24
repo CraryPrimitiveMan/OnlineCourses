@@ -41,8 +41,8 @@ class Query extends Component implements QueryInterface
     use QueryTrait;
 
     /**
-     * @var array the fields of the results to return. For example, `['name', 'group_id']`.
-     * The "_id" field is always returned. If not set, if means selecting all columns.
+     * @var array the fields of the results to return. For example: `['name', 'group_id']`, `['name' => true, '_id' => false]`.
+     * Unless directly excluded, the "_id" field is always returned. If not set, it means selecting all columns.
      * @see select()
      */
     public $select = [];
@@ -149,20 +149,11 @@ class Query extends Component implements QueryInterface
         $result = [];
         if ($all) {
             foreach ($cursor as $row) {
-                if ($indexBy !== null) {
-                    if (is_string($indexBy)) {
-                        $key = $row[$indexBy];
-                    } else {
-                        $key = call_user_func($indexBy, $row);
-                    }
-                    $result[$key] = $row;
-                } else {
-                    $result[] = $row;
-                }
+                $result[] = $row;
             }
         } else {
-            if ($cursor->hasNext()) {
-                $result = $cursor->getNext();
+            if ($row = $cursor->getNext()) {
+                $result = $row;
             } else {
                 $result = false;
             }
@@ -180,8 +171,32 @@ class Query extends Component implements QueryInterface
     public function all($db = null)
     {
         $cursor = $this->buildCursor($db);
+        $rows = $this->fetchRows($cursor, true, $this->indexBy);
+        return $this->populate($rows);
+    }
 
-        return $this->fetchRows($cursor, true, $this->indexBy);
+    /**
+     * Converts the raw query results into the format as specified by this query.
+     * This method is internally used to convert the data fetched from database
+     * into the format as required by this query.
+     * @param array $rows the raw query result from database
+     * @return array the converted query result
+     */
+    public function populate($rows)
+    {
+        if ($this->indexBy === null) {
+            return $rows;
+        }
+        $result = [];
+        foreach ($rows as $row) {
+            if (is_string($this->indexBy)) {
+                $key = $row[$this->indexBy];
+            } else {
+                $key = call_user_func($this->indexBy, $row);
+            }
+            $result[$key] = $row;
+        }
+        return $result;
     }
 
     /**
@@ -194,7 +209,6 @@ class Query extends Component implements QueryInterface
     public function one($db = null)
     {
         $cursor = $this->buildCursor($db);
-
         return $this->fetchRows($cursor, false);
     }
 
@@ -377,8 +391,12 @@ class Query extends Component implements QueryInterface
     {
         $selectFields = [];
         if (!empty($this->select)) {
-            foreach ($this->select as $fieldName) {
-                $selectFields[$fieldName] = true;
+            foreach ($this->select as $key => $value) {
+                if (is_numeric($key)) {
+                    $selectFields[$value] = true;
+                } else {
+                    $selectFields[$key] = $value;
+                }
             }
         }
         return $selectFields;

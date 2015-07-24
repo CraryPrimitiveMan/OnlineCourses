@@ -54,6 +54,9 @@ $renderer = $this->context;
     <?php if ($type instanceof ClassDoc && !empty($type->interfaces)): ?>
         <tr><th>Implements</th><td><?= $renderer->renderInterfaces($type->interfaces) ?></td></tr>
     <?php endif; ?>
+    <?php if ($type instanceof InterfaceDoc && !empty($type->parentInterfaces)): ?>
+        <tr><th>Implements</th><td><?= $renderer->renderInterfaces($type->parentInterfaces) ?></td></tr>
+    <?php endif; ?>
     <?php if (!($type instanceof InterfaceDoc) && !empty($type->traits)): ?>
         <tr><th>Uses Traits</th><td><?= $renderer->renderTraits($type->traits) ?></td></tr>
     <?php endif; ?>
@@ -68,6 +71,9 @@ $renderer = $this->context;
     <?php endif; ?>
     <?php if (!empty($type->since)): ?>
         <tr><th>Available since version</th><td><?= $type->since ?></td></tr>
+    <?php endif; ?>
+    <?php if (!empty($type->deprecatedSince) || !empty($type->deprecatedReason)): ?>
+        <tr class="deprecated"><th>Deprecated since version</th><td><?= $type->deprecatedSince ?> <?= $type->deprecatedReason ?></td></tr>
     <?php endif; ?>
     <?php if (($sourceUrl = $renderer->getSourceUrl($type)) !== null): ?>
         <tr>
@@ -84,18 +90,18 @@ $renderer = $this->context;
     <?= $this->render('seeAlso', ['object' => $type]) ?>
 </div>
 
-<a name="properties"></a>
+<a id="properties"></a>
 <?= $this->render('@yii/apidoc/templates/html/views/propertySummary', ['type' => $type, 'protected' => false]) ?>
 <?= $this->render('@yii/apidoc/templates/html/views/propertySummary', ['type' => $type, 'protected' => true]) ?>
 
-<a name="methods"></a>
+<a id="methods"></a>
 <?= $this->render('@yii/apidoc/templates/html/views/methodSummary', ['type' => $type, 'protected' => false]) ?>
 <?= $this->render('@yii/apidoc/templates/html/views/methodSummary', ['type' => $type, 'protected' => true]) ?>
 
-<a name="events"></a>
+<a id="events"></a>
 <?= $this->render('@yii/apidoc/templates/html/views/eventSummary', ['type' => $type]) ?>
 
-<a name="constants"></a>
+<a id="constants"></a>
 <?= $this->render('@yii/apidoc/templates/html/views/constSummary', ['type' => $type]) ?>
 
 <?= $this->render('@yii/apidoc/templates/html/views/propertyDetails', ['type' => $type]) ?>
